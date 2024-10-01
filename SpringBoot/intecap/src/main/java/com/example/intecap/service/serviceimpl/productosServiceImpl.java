@@ -40,5 +40,17 @@ public class productosServiceImpl extends CommonSvcImpl<productosModel, producto
    public productosModel findByNombre(String nombre){
         return this.repository.findByNombre(nombre);
    }
+
+@Override
+public boolean existsById(int idProducto) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'existsById'");
+}
+
+@Override
+public boolean existsById(int idProducto) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'existsById'");
+}
     
 }

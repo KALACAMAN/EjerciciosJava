@@ -18,4 +18,6 @@ public interface productosService extends CommonSvc<productosModel> {
     public void deleteById(int id);
 
     Iterable<productosModel> saveAll(Iterable<productosModel> entities);
+
+    public boolean existsById(int idProducto);
 }

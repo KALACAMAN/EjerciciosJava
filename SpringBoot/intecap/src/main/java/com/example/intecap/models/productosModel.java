@@ -32,4 +32,9 @@ public class productosModel implements Serializable {
 
     @Column(name = "stock")
     private int stock;
+
+    public static boolean existsById(int id2) {
+        
+        throw new UnsupportedOperationException("Unimplemented method 'existsById'");
+    }
 }

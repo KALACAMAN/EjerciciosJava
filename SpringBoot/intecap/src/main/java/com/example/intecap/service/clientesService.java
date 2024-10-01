@@ -18,5 +18,7 @@ public interface clientesService extends CommonSvc<clientesModel> {
     clientesModel findByNombre(String nombre);
 
     Iterable<clientesModel> saveAll(Iterable<clientesModel> entities);
+
+    public boolean existsById(int idCliente);
     
 }
