@@ -5,10 +5,18 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.example.intecap.models.clientesModel;
 import com.example.intecap.service.clientesService;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("/clientes")
@@ -19,51 +27,53 @@ public class clientesController {
     private clientesService clientesService;
 
     @GetMapping("/listar")
-    public ResponseEntity<Iterable<clientesModel>> getClientes() {
-        return ResponseEntity.ok(clientesService.findAll());
+    public Iterable<clientesModel> getClientes() {
+        return this.clientesService.findAll();
     }
 
     @PostMapping("/guardar")
     public ResponseEntity<String> saveClientes(@RequestBody clientesModel entity) {
+
         try {
-            clientesService.save(entity);
-            return ResponseEntity.ok("Cliente guardado correctamente");
+            this.clientesService.save(entity);
+            return ResponseEntity.ok("Cliente guardado exitosamente");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al guardar el cliente: " + e.getMessage());
+            return ResponseEntity.badRequest().body("Error al guardar el cliente");
         }
     }
 
-    @DeleteMapping("/eliminar")
-    public ResponseEntity<String> deleteClientes(@RequestBody int idCliente) {
+    @DeleteMapping("/eliminar/{idCliente}")
+    public ResponseEntity<String> deleteClientes(@PathVariable int idCliente) {
         try {
-            if (clientesService.existsById(idCliente)) {
-                clientesService.deleteById(idCliente);
-                return ResponseEntity.ok("Cliente eliminado correctamente");
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente no encontrado");
-            }
+            this.clientesService.deleteById(idCliente);
+            return ResponseEntity.ok("Cliente eliminado exitosamente");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar el cliente: " + e.getMessage());
+            return ResponseEntity.badRequest().body("Error al eliminar el cliente");
         }
     }
 
-    @PutMapping("/actualizar")
-    public ResponseEntity<String> updateClientes(@RequestBody clientesModel entity) {
+    @PutMapping("/actualizar/{idCliente}")
+    public ResponseEntity<String> updateClientes(@PathVariable int idCliente, @RequestBody clientesModel entity) {
         try {
-            Optional<clientesModel> existingCliente = clientesService.findById(entity.getId());
+            // Buscamos el id del cliente
+            Optional<clientesModel> existingCliente = this.clientesService.findById(idCliente);
 
             if (existingCliente.isPresent()) {
                 clientesModel clienteToUpdate = existingCliente.get();
+
                 clienteToUpdate.setNombre(entity.getNombre());
                 clienteToUpdate.setApellido(entity.getApellido());
 
-                clientesService.save(clienteToUpdate);
-                return ResponseEntity.ok("Cliente actualizado correctamente");
+                // Guardamos los cambios
+                this.clientesService.save(clienteToUpdate);
+                this.clientesService.save(entity);
+                return ResponseEntity.ok("Cliente actualizado exitosamente");
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente no encontrado");
             }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al actualizar el cliente: " + e.getMessage());
+            return ResponseEntity.badRequest().body("Error al actualizar el cliente");
         }
     }
+
 }

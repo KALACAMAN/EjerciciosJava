@@ -9,5 +9,4 @@ public class IntecapApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(IntecapApplication.class, args);
 	}
-
 }

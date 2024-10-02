@@ -5,7 +5,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.intecap.models.productosModel;
@@ -20,57 +19,53 @@ public class productosController {
     private productosService productosService;
 
     @GetMapping("/listar")
-    public ResponseEntity<Iterable<productosModel>> getProductos() {
-        return ResponseEntity.ok(productosService.findAll());
+    public Iterable<productosModel> getProductos() {
+        return this.productosService.findAll();
     }
 
     @PostMapping("/guardar")
-    public ResponseEntity<String> saveProductos(@Validated @RequestBody productosModel entity) {
+    public ResponseEntity<String> saveProductos(@RequestBody productosModel entity) {
+
         try {
-            productosService.save(entity);
+            this.productosService.save(entity);
             return ResponseEntity.ok("Producto guardado exitosamente");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body("Error al guardar el producto: " + e.getMessage());
+            return ResponseEntity.badRequest().body("Error al guardar el producto");
         }
     }
 
-    @DeleteMapping("/eliminar")
-    public ResponseEntity<String> deleteProductos(@RequestBody int idProducto) {
+    @DeleteMapping("/eliminar/{idProducto}")
+    public ResponseEntity<String> deleteProductos(@PathVariable int idProducto) {
         try {
-            if (productosService.existsById(idProducto)) {
-                productosService.deleteById(idProducto);
-                return ResponseEntity.ok("Producto eliminado exitosamente");
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                                     .body("Producto no encontrado");
-            }
+            this.productosService.deleteById(idProducto);
+            return ResponseEntity.ok("Producto eliminado exitosamente");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body("Error al eliminar el producto: " + e.getMessage());
+            return ResponseEntity.badRequest().body("Error al eliminar el producto");
         }
     }
 
-    @PutMapping("/actualizar")
-    public ResponseEntity<String> updateProductos(@RequestBody productosModel entity) {
+    @PutMapping("/actualizar/{idProducto}")
+    public ResponseEntity<String> updateProductos(@PathVariable int idProducto, @RequestBody productosModel entity) {
         try {
-            Optional<productosModel> existingProducto = productosService.findById(entity.getId());
+            // Buscamos el id del producto
+            Optional<productosModel> existingProducto = this.productosService.findById(idProducto);
 
             if (existingProducto.isPresent()) {
                 productosModel productoToUpdate = existingProducto.get();
+
                 productoToUpdate.setNombre(entity.getNombre());
                 productoToUpdate.setPrecio(entity.getPrecio());
                 productoToUpdate.setStock(entity.getStock());
 
-                productosService.save(productoToUpdate);
+                // Guardamos los cambios
+                this.productosService.save(productoToUpdate);
+                this.productosService.save(entity);
                 return ResponseEntity.ok("Producto actualizado exitosamente");
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                                     .body("Producto no encontrado");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Producto no encontrado");
             }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body("Error al actualizar el producto: " + e.getMessage());
+            return ResponseEntity.badRequest().body("Error al actualizar el producto");
         }
     }
 }

@@ -4,8 +4,9 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.example.intecap.models.productosModel;
 
-public interface productosRepository extends CrudRepository<productosModel, Integer> {
-    productosModel findByNombre(String nombre);
+public interface productosRepository extends CrudRepository<productosModel, Object> {
+
+    public productosModel findByNombre(String nombre);
 }
 
 

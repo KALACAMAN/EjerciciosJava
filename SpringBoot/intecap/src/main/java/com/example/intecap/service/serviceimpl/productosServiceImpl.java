@@ -10,47 +10,34 @@ import com.example.intecap.service.productosService;
 
 @Service
 public class productosServiceImpl extends CommonSvcImpl<productosModel, productosRepository> implements productosService {
-    
+
     @Override
-    public void deleteById(int id){
+    public void deleteById(int id) {
         this.repository.deleteById(id);
     }
 
     @Override
-    public Iterable<productosModel> findAll(){
+    public Iterable<productosModel> findAll() {
         return this.repository.findAll();
     }
 
     @Override
-    public Optional<productosModel> findById(int id){
+    public Optional<productosModel> findById(int id) {
         return this.repository.findById(id);
     }
 
     @Override
-    public productosModel save(productosModel entity){
+    public productosModel save(productosModel entity) {
         return this.repository.save(entity);
     }
 
     @Override
-    public Iterable<productosModel> saveAll(Iterable<productosModel> entites){
-        return this.repository.saveAll(entites);
+    public Iterable<productosModel> saveAll(Iterable<productosModel> entities) {
+        return this.repository.saveAll(entities);
     }
 
-   @Override
-   public productosModel findByNombre(String nombre){
+    @Override
+    public productosModel findByNombre(String nombre) {
         return this.repository.findByNombre(nombre);
-   }
-
-@Override
-public boolean existsById(int idProducto) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'existsById'");
-}
-
-@Override
-public boolean existsById(int idProducto) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'existsById'");
-}
-    
+    }
 }
